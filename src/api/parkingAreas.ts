@@ -45,7 +45,7 @@ export const useCreateParkingArea = () => {
             return { prevData };
         },
 
-        onError: (err, newArea, context) => {
+        onError: (_err, _newArea, context) => {
             if (context?.prevData) {
                 queryClient.setQueryData(['parkingAreas'], context.prevData);
             }
@@ -74,7 +74,7 @@ export const useUpdateParkingArea = () => {
             return { prevData };
         },
 
-        onError: (err, item, context) => {
+        onError: (_err, _item, context) => {
             if (context?.prevData) {
                 queryClient.setQueryData(['parkingAreas'], context.prevData);
             }
@@ -103,7 +103,7 @@ export const useDeleteParkingArea = () => {
             return { prevData };
         },
 
-        onError: (err, id, context) => {
+        onError: (_err, _id, context) => {
             if (context?.prevData) {
                 queryClient.setQueryData(['parkingAreas'], context.prevData);
             }

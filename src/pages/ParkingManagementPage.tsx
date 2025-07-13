@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ParkingAreaForm } from 'src/components/organisms/ParkingAreaForm';
 import { ParkingAreaList } from 'src/components/organisms/ParkingAreaList';
 import { useParkingAreas, useCreateParkingArea, useDeleteParkingArea, useUpdateParkingArea } from 'src/api/parkingAreas';
@@ -6,7 +6,7 @@ import { useParkingAreas, useCreateParkingArea, useDeleteParkingArea, useUpdateP
 const ParkingManagementPage = () => {
     const { data: areas, isLoading, isError, error } = useParkingAreas();
     const { mutate: createParkingArea, isPending: isCreating, error: createError } = useCreateParkingArea();
-    const { mutate: deleteParkingArea, isPending: isDeleting, error: deleteError } = useDeleteParkingArea();
+    const { mutate: deleteParkingArea, isPending: _isDeleting, error: deleteError } = useDeleteParkingArea();
     const { mutate: updateParkingArea, isPending: isUpdating, error: updateError } = useUpdateParkingArea();
     const [editingId, setEditingId] = useState<string | null>(null);
     const [formData, setFormData] = useState({
