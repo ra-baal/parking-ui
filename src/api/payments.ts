@@ -1,22 +1,21 @@
 import { useMutation } from '@tanstack/react-query';
 import { api } from './axios';
 
-export interface PaymentRequest {
+export interface CalculatePaymentRequest {
     parkingAreaId: string;
     startTime: string;
     endTime: string;
 }
 
-export interface PaymentResultDto {
-    amountUSD: number;
-    amountEUR: number | null;
-    amountPLN: number | null;
+export interface PaymentDto {
+    amount: number;
+    currency: string;
 }
 
 export const useCalculatePayment = () =>
-    useMutation<PaymentResultDto, Error, PaymentRequest>({
-        mutationFn: async (request: PaymentRequest) => {
-            const response = await api().post<PaymentResultDto>('/payments/calculate', request);
+    useMutation<PaymentDto, Error, CalculatePaymentRequest>({
+        mutationFn: async (request: CalculatePaymentRequest) => {
+            const response = await api().post<PaymentDto>('/payments/calculate', request);
             return response.data;
         },
     });

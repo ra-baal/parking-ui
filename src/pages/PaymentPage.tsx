@@ -1,34 +1,52 @@
 import React, { useState } from 'react';
 import { LabeledSelect } from 'src/components/molecules/LabeledSelect';
-import { LabeledDateTimeInput } from 'src/components/molecules/LabeledDateTimeInput';
+import { LabeledInput } from 'src/components/molecules/LabeledInput';
 import { FormRow } from 'src/components/molecules/FormRow';
 import { Button } from 'src/components/atoms/Button';
 import { useParkingAreas } from 'src/api/parkingAreas';
 import { useCalculatePayment } from 'src/api/payments';
-
-const currencies = [
-    { code: 'USD', label: 'USD ($)' },
-    { code: 'EUR', label: 'EUR (€)' },
-    { code: 'PLN', label: 'PLN (zł)' },
-];
+import { useConvertCurrency } from 'src/api/currency';
 
 export const PaymentPage = () => {
     const { data: parkingAreas, isLoading: loadingAreas } = useParkingAreas();
     const [parkingArea, setParkingArea] = useState('');
+    const [date, setDate] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
-    const [currency, setCurrency] = useState('USD');
     const [submitted, setSubmitted] = useState(false);
 
     const { mutate, data: payment, status, error } = useCalculatePayment();
+    const {
+        mutate: convertCurrency,
+        data: convertedPayment,
+        status: convertStatus,
+        error: convertError,
+        reset: resetConvert
+    } = useConvertCurrency();
+
+    const combineDateTime = (date: string, time: string) => {
+        if (!date || !time) return '';
+        return `${date}T${time}`;
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setSubmitted(true);
         mutate({
             parkingAreaId: parkingArea,
-            startTime,
-            endTime,
+            startTime: combineDateTime(date, startTime),
+            endTime: combineDateTime(date, endTime),
+        });
+    };
+
+    const handleConvert = (toCurrency: string) => {
+        if (!payment) return;
+        resetConvert();
+        convertCurrency({
+            fromCurrency: payment.currency,
+            toCurrency,
+            amount: payment.amount,
+            date: combineDateTime(date, startTime),
         });
     };
 
@@ -52,35 +70,31 @@ export const PaymentPage = () => {
                     </LabeledSelect>
                 </FormRow>
                 <FormRow>
-                    <LabeledDateTimeInput
-                        label="Start Time"
+                    <LabeledInput
+                        label="Date"
+                        type="date"
+                        value={date}
+                        onChange={e => setDate(e.target.value)}
+                        name="date"
+                    />
+                </FormRow>
+                <FormRow>
+                    <LabeledInput
+                        label="Start"
+                        type="time"
                         value={startTime}
                         onChange={e => setStartTime(e.target.value)}
                         name="startTime"
-                        required
                     />
                 </FormRow>
                 <FormRow>
-                    <LabeledDateTimeInput
-                        label="End Time"
+                    <LabeledInput
+                        label="End"
+                        type="time"
                         value={endTime}
                         onChange={e => setEndTime(e.target.value)}
                         name="endTime"
-                        required
                     />
-                </FormRow>
-                <FormRow>
-                    <LabeledSelect
-                        label="Currency"
-                        value={currency}
-                        onChange={e => setCurrency(e.target.value)}
-                        name="currency"
-                        required
-                    >
-                        {currencies.map(c => (
-                            <option key={c.code} value={c.code}>{c.label}</option>
-                        ))}
-                    </LabeledSelect>
                 </FormRow>
                 <Button type="submit" disabled={status === 'pending' || loadingAreas}>Calculate Payment</Button>
             </form>
@@ -89,17 +103,20 @@ export const PaymentPage = () => {
             {payment && (
                 <div style={{ marginTop: 24 }}>
                     <strong>Amount to pay:</strong>
-                    <ul>
-                        <li style={{ fontWeight: currency === 'USD' ? 'bold' : undefined }}>
-                            USD: {payment.amountUSD}
-                        </li>
-                        <li style={{ fontWeight: currency === 'EUR' ? 'bold' : undefined }}>
-                            EUR: {payment.amountEUR ?? 'N/A'}
-                        </li>
-                        <li style={{ fontWeight: currency === 'PLN' ? 'bold' : undefined }}>
-                            PLN: {payment.amountPLN ?? 'N/A'}
-                        </li>
-                    </ul>
+                    <div>
+                        {payment.amount} {payment.currency}
+                    </div>
+                    <div style={{ marginTop: 16, display: 'flex', gap: 8 }}>
+                        <Button type="button" onClick={() => handleConvert('EUR')}>Calculate to EUR</Button>
+                        <Button type="button" onClick={() => handleConvert('PLN')}>Calculate to PLN</Button>
+                    </div>
+                    {convertStatus === 'pending' && <div style={{ marginTop: 8 }}>Loading...</div>}
+                    {convertStatus === 'error' && <div style={{ marginTop: 8, color: 'red' }}>Error: {convertError?.message}</div>}
+                    {convertedPayment && (
+                        <div style={{ marginTop: 8 }}>
+                            <strong>Recalculated amount:</strong> {convertedPayment.amount} {convertedPayment.currency}
+                        </div>
+                    )}
                 </div>
             )}
         </div>
