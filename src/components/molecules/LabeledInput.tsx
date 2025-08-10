@@ -11,6 +11,10 @@ interface LabeledInputProps {
     placeholder?: string;
     name?: string;
     disabled?: boolean;
+    required?: boolean;
+    min?: string | number;
+    max?: string | number;
+    step?: string | number;
 }
 
 export const LabeledInput = ({ label, htmlFor, ...inputProps }: LabeledInputProps) => (

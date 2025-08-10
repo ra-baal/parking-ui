@@ -63,19 +63,36 @@ const ParkingManagementPage = () => {
     };
 
     return (
-        <div className="p-4 max-w-4xl mx-auto">
-            <h1 className="text-2xl font-bold mb-4">Parking Areas Management</h1>
-            <ParkingAreaForm
-                onSubmit={handleFormSubmit}
-                data={formData}
-                isSubmitting={isCreating || isUpdating}
-            />
-            {createError && <div style={{ color: 'red' }}>Error: {createError.message}</div>}
-            {updateError && <div style={{ color: 'red' }}>Error: {updateError.message}</div>}
-            {deleteError && <div style={{ color: 'red' }}>Error: {deleteError.message}</div>}
-            <div style={{ marginTop: 32 }}>
-                {isLoading && <div>Loading parking areas...</div>}
-                {isError && <div>Error: {(error as Error).message}</div>}
+        <div className="p-8 max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+                <h1 className="text-4xl font-bold text-slate-800 mb-4">Parking Areas Management</h1>
+                <p className="text-slate-600 text-lg">Manage your parking areas, rates, and discounts</p>
+            </div>
+
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-blue-900/5 border border-white/20 p-8 mb-8">
+                <ParkingAreaForm
+                    onSubmit={handleFormSubmit}
+                    data={formData}
+                    isSubmitting={isCreating || isUpdating}
+                />
+            </div>
+
+            {createError && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4">Error: {createError.message}</div>}
+            {updateError && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4">Error: {updateError.message}</div>}
+            {deleteError && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4">Error: {deleteError.message}</div>}
+
+            <div className="mt-12">
+                {isLoading && (
+                    <div className="text-center py-12">
+                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+                        <div className="text-slate-600">Loading parking areas...</div>
+                    </div>
+                )}
+                {isError && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-center">
+                        Error: {(error as Error).message}
+                    </div>
+                )}
                 {areas && <ParkingAreaList areas={areas} onEdit={handleEdit} onDelete={handleDelete} />}
             </div>
         </div>
