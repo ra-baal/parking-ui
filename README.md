@@ -1,6 +1,4 @@
-# Parking Management System
-
-A modern parking management application built with React, TypeScript, and Tailwind CSS. Demonstrates advanced frontend development skills with clean architecture and modern state management.
+# parking-ui
 
 ## Features
 
