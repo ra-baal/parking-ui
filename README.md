@@ -1,4 +1,4 @@
-# 🚗 Parking Management System
+# Parking Management System
 
 A modern parking management application built with React, TypeScript, and Tailwind CSS. Demonstrates advanced frontend development skills with clean architecture and modern state management.
 
@@ -21,11 +21,11 @@ A modern parking management application built with React, TypeScript, and Tailwi
 ## Architecture
 
 ### Atomic Design Structure
-- **Atoms**: Basic UI components (Button, Input, Select, Label)
-- **Molecules**: Composite components (FormRow, LabeledInput, LabeledSelect)
-- **Organisms**: Complex components (ParkingAreaForm, ParkingAreaList)
-- **Templates**: Page layouts (MainTemplate)
-- **Pages**: Route components (ParkingManagementPage, PaymentPage)
+- **Atoms**: Basic UI components
+- **Molecules**: Composite components
+- **Organisms**: Complex components
+- **Templates**: Page layouts
+- **Pages**: Route components
 
 ### Key Patterns
 - **Component Composition**: Reusable, composable UI components
@@ -46,10 +46,10 @@ npm run dev
 src/
 ├── api/                 # API layer and data fetching
 ├── components/          # Atomic design components
-│   ├── atoms/          # Basic UI components
-│   ├── molecules/      # Composite components
-│   ├── organisms/      # Complex components
-│   └── templates/      # Page layouts
-├── pages/              # Route components
-└── main.tsx           # App entry point
+│   ├── atoms/           # Basic UI components
+│   ├── molecules/       # Composite components
+│   ├── organisms/       # Complex components
+│   └── templates/       # Page layouts
+├── pages/               # Route components
+└── main.tsx             # App entry point
 ```
