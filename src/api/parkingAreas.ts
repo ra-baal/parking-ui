@@ -10,11 +10,13 @@ export interface ParkingArea {
     discountPercentage: number;
 }
 
+const path = '/ParkingAreas';
+
 export const useParkingAreas = () =>
     useQuery({
         queryKey: ['parkingAreas'],
         queryFn: async () => {
-            const res = await api().get<ParkingArea[]>('/parkingareas');
+            const res = await api().get<ParkingArea[]>(path);
             return res.data;
         },
     });
@@ -24,7 +26,7 @@ export const useCreateParkingArea = () => {
 
     return useMutation({
         mutationFn: (data: Omit<ParkingArea, 'id'>) => {
-            return api().post('/parkingareas', data)
+            return api().post(path, data)
         },
 
         onMutate: async (newArea) => {
@@ -62,7 +64,8 @@ export const useUpdateParkingArea = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, ...data }: ParkingArea) => api().put(`${id}`, data),
+        mutationFn: ({ id, ...data }: ParkingArea) =>
+            api().put(path, data, { params: { id } }),
 
         onMutate: (item) => {
             queryClient.cancelQueries({ queryKey: ['parkingAreas'] });
@@ -89,7 +92,7 @@ export const useUpdateParkingArea = () => {
 export const useDeleteParkingArea = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (id: string) => api().delete(`/${id}`),
+        mutationFn: (id: string) => api().delete(path, { params: { id } }),
 
         onMutate: async (id) => {
             await queryClient.cancelQueries({ queryKey: ['parkingAreas'] });
